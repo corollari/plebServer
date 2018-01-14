@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Create a new account - plebRPG</title>
+<style>
+    body {
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
+</head>
+<body>
+  <form action="https://leipanaama.albert.sh/register.php" method="post">
+    Username:
+    <input type="text" id="accountNameTextBox" name="accountName" required pattern="^[a-zA-Z]{1}[a-zA-Z0-9]{0,31}$" onkeyup="checkUsernameAvailability(this.value)"><img id="availableUsernameImg" height="20" style="margin-bottom: -5px;" src="" /><br>
+    Password:
+    <input type="password" id="passwordTextBox" name="password" required pattern="[\x01-\xFF]{0,72}"><br>
+    <input type="submit" style="margin-left:auto;margin-right:auto;display:block;">
+  </form>
+
+    <script>
+        function checkUsernameAvailability(username) {
+            var tickImg = document.getElementById("availableUsernameImg");
+            if (!document.getElementById("accountNameTextBox").checkValidity()) {
+                tickImg.src = "cross.png";
+            }
+            else {
+                tickImg.src = "loading.gif";
+                var xhttp = new XMLHttpRequest;
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        if (this.responseText == "available") {
+                            tickImg.src = "tick.png";
+                        }
+                        else {
+                            tickImg.src = "cross.png";
+                        }
+                    }
+                }
+                xhttp.open("POST", "checkAvailable.php", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("accountName=" + username);
+            }
+        }
+    </script>
+
+</body></html>
